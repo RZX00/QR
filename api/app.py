@@ -5,7 +5,6 @@ QR码处理工具 - Vercel部署版本
 """
 
 import os
-import sys
 import tempfile
 import shutil
 import uuid
@@ -16,13 +15,9 @@ from pathlib import Path
 from flask import Flask, request, jsonify, send_file
 from werkzeug.utils import secure_filename
 import threading
-import subprocess
 import cv2
 import numpy as np
 from PIL import Image
-
-# 添加项目根目录到Python路径
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 try:
     from pyzbar import pyzbar
@@ -160,7 +155,10 @@ class VercelQRProcessor:
                                 qr_image = self._extract_qr_region(image, qr_code)
                                 
                                 # 保存基础QR码
-                                base_name = f"{file_path.stem}_qr_{i+1}"
+                                base_name = f"{file_path.stem}_qr"
+                                if len(qr_codes) > 1:
+                                    base_name += f"_{i+1}"
+                                
                                 qr_output_path = session['output_dir'] / 'qr_codes'
                                 qr_output_path.mkdir(exist_ok=True)
                                 
@@ -189,10 +187,13 @@ class VercelQRProcessor:
                                     svg_dir = session['output_dir'] / 'svg_codes'
                                     svg_dir.mkdir(exist_ok=True)
                                     
-                                    svg_data = self._create_svg_version(qr_code.data.decode('utf-8'))
-                                    svg_path = svg_dir / f"{base_name}.svg"
-                                    with open(str(svg_path), 'w') as f:
-                                        f.write(svg_data)
+                                    try:
+                                        svg_data = self._create_svg_version(qr_code.data.decode('utf-8'))
+                                        svg_path = svg_dir / f"{base_name}.svg"
+                                        with open(str(svg_path), 'w') as f:
+                                            f.write(svg_data)
+                                    except Exception as e:
+                                        print(f"SVG creation error: {e}")
                         else:
                             processing_status['output'].append(f'No QR codes found in {file_info["original_name"]}')
                     
@@ -321,55 +322,9 @@ class VercelQRProcessor:
             i += 1
         
         return f"{size_bytes:.1f} {size_names[i]}"
-    
-    def cleanup_old_sessions(self, max_age_hours=24):
-        """清理旧的会话数据"""
-        current_time = time.time()
-        max_age_seconds = max_age_hours * 3600
-        
-        sessions_to_remove = []
-        for session_id, session in sessions.items():
-            if current_time - session['created_at'] > max_age_seconds:
-                sessions_to_remove.append(session_id)
-        
-        for session_id in sessions_to_remove:
-            try:
-                session = sessions[session_id]
-                if session['upload_dir'].exists():
-                    shutil.rmtree(session['upload_dir'])
-                if session['output_dir'].exists():
-                    shutil.rmtree(session['output_dir'])
-                del sessions[session_id]
-            except Exception as e:
-                print(f"Error cleaning up session {session_id}: {e}")
 
 # 初始化处理器
 processor = VercelQRProcessor()
-
-@app.route('/api/upload', methods=['POST'])
-def upload_files():
-    """处理文件上传"""
-    try:
-        # 创建新会话
-        session_id = processor.create_session()
-        
-        # 获取上传的文件
-        files = request.files.getlist('files')
-        if not files or all(f.filename == '' for f in files):
-            return jsonify({'error': 'No files selected'}), 400
-        
-        # 保存文件
-        saved_files = processor.save_uploaded_files(files, session_id)
-        
-        return jsonify({
-            'success': True,
-            'session_id': session_id,
-            'files': saved_files,
-            'message': f'Successfully uploaded {len(saved_files)} files'
-        })
-    
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/process', methods=['POST'])
 def process_files():
@@ -485,15 +440,6 @@ def download_file():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/api/cleanup', methods=['POST'])
-def cleanup_sessions():
-    """清理旧会话"""
-    try:
-        processor.cleanup_old_sessions()
-        return jsonify({'success': True, 'message': 'Cleanup completed'})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
 @app.route('/api/health')
 def health_check():
     """健康检查"""
@@ -515,9 +461,4 @@ def not_found(e):
 def internal_error(e):
     return jsonify({'error': 'Internal server error'}), 500
 
-# Vercel需要的主要处理函数
-def handler(event, context):
-    return app(event, context)
-
-if __name__ == '__main__':
-    app.run(debug=True)
+# Flask app is ready for import by index.py
