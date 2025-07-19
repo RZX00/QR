@@ -171,10 +171,9 @@
 
         /* Main Layout */
         .main-layout {
-            display: grid;
-            grid-template-columns: 1fr 420px;
-            gap: 2rem;
-            align-items: start;
+            display: block;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .processing-panel {
@@ -199,18 +198,6 @@
             border-radius: var(--border-radius-2xl) var(--border-radius-2xl) 0 0;
         }
 
-        .preview-panel {
-            background: var(--white);
-            border-radius: var(--border-radius-2xl);
-            padding: 2rem;
-            box-shadow: var(--shadow-2xl);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            position: sticky;
-            top: 2rem;
-            max-height: calc(100vh - 4rem);
-            overflow-y: auto;
-        }
 
         /* Enhanced Upload Area */
         .upload-area {
@@ -585,113 +572,6 @@
             transform: translateX(24px);
         }
 
-        /* Enhanced Preview Panel */
-        .preview-panel {
-            position: relative;
-        }
-
-        .preview-panel::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--gradient-accent);
-            border-radius: var(--border-radius-2xl) var(--border-radius-2xl) 0 0;
-        }
-
-        .preview-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--gray-800);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .preview-title i {
-            color: var(--accent);
-        }
-
-        .preview-container {
-            background: var(--gray-50);
-            border-radius: var(--border-radius-xl);
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border: 1px solid var(--gray-200);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .preview-image {
-            width: 100%;
-            border-radius: var(--border-radius);
-            margin-bottom: 0.5rem;
-            transition: var(--transition);
-        }
-
-        .preview-image:hover {
-            transform: scale(1.02);
-        }
-
-        .preview-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.85rem;
-            color: var(--gray-600);
-            margin-bottom: 1rem;
-        }
-
-        .preview-placeholder {
-            text-align: center;
-            color: var(--gray-400);
-            padding: 4rem 1rem;
-            font-style: italic;
-            background: var(--gradient-surface);
-            border-radius: var(--border-radius-xl);
-            border: 2px dashed var(--gray-300);
-        }
-
-        .preview-placeholder i {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            opacity: 0.3;
-        }
-
-        .preview-steps {
-            background: var(--white);
-            border-radius: var(--border-radius);
-            padding: 1rem;
-            border: 1px solid var(--gray-200);
-        }
-
-        .preview-steps-title {
-            font-weight: 600;
-            color: var(--gray-800);
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .preview-step {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.4rem 0;
-            color: var(--primary);
-            font-size: 0.85rem;
-            border-bottom: 1px solid var(--gray-100);
-        }
-
-        .preview-step:last-child {
-            border-bottom: none;
-        }
-
-        .preview-step i {
-            font-size: 0.7rem;
-        }
 
         /* Results Section */
         .results-container {
@@ -1326,20 +1206,6 @@
                 </div>
             </div>
 
-            <!-- Preview Panel -->
-            <div class="preview-panel slide-up">
-                <div class="preview-title">
-                    <i class="fas fa-eye"></i>
-                    <span data-i18n="livePreview">Live Preview</span>
-                </div>
-                <div class="preview-container">
-                    <div class="preview-placeholder" id="previewPlaceholder">
-                        <i class="fas fa-image"></i>
-                        <div data-i18n="previewPlaceholder">Upload an image to see live preview</div>
-                    </div>
-                    <div id="previewContent" style="display: none;"></div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -1380,8 +1246,6 @@
                 startProcessing: "Start Processing",
                 preparing: "Preparing...",
                 results: "Results",
-                livePreview: "Live Preview",
-                previewPlaceholder: "Upload an image to see live preview",
                 processing: "Processing...",
                 completed: "Completed",
                 download: "Download",
@@ -1421,8 +1285,6 @@
                 startProcessing: "开始处理",
                 preparing: "准备中...",
                 results: "结果",
-                livePreview: "实时预览",
-                previewPlaceholder: "上传图片查看实时预览",
                 processing: "处理中...",
                 completed: "已完成",
                 download: "下载",
@@ -1462,8 +1324,6 @@
                 startProcessing: "処理開始",
                 preparing: "準備中...",
                 results: "結果",
-                livePreview: "ライブプレビュー",
-                previewPlaceholder: "画像をアップロードしてライブプレビューを表示",
                 processing: "処理中...",
                 completed: "完了",
                 download: "ダウンロード",
@@ -1493,7 +1353,6 @@
             setupFileUpload();
             setupSortable();
             updateLanguage();
-            setupPreview();
         }
 
         // Language functions
@@ -1558,7 +1417,6 @@
             const imageFiles = files.filter(file => file.type.startsWith('image/'));
             uploadedFiles = [...uploadedFiles, ...imageFiles];
             updateFileList();
-            updatePreview();
         }
 
         function updateFileList() {
@@ -1600,7 +1458,6 @@
         function removeFile(index) {
             uploadedFiles.splice(index, 1);
             updateFileList();
-            updatePreview();
         }
 
         function formatFileSize(bytes) {
@@ -1626,7 +1483,6 @@
         function updateStepOrder() {
             const stepItems = document.querySelectorAll('.step-item');
             stepOrder = Array.from(stepItems).map(item => item.getAttribute('data-step'));
-            updatePreview();
         }
 
         function toggleStep(step) {
@@ -1647,51 +1503,8 @@
                 toggle.classList.add('active');
                 stepItem.classList.add('active');
             }
-            
-            updatePreview();
         }
 
-        // Preview functions
-        function setupPreview() {
-            updatePreview();
-        }
-
-        function updatePreview() {
-            const previewContent = document.getElementById('previewContent');
-            const previewPlaceholder = document.getElementById('previewPlaceholder');
-            
-            if (uploadedFiles.length === 0) {
-                previewContent.style.display = 'none';
-                previewPlaceholder.style.display = 'block';
-                return;
-            }
-
-            previewPlaceholder.style.display = 'none';
-            previewContent.style.display = 'block';
-            
-            const file = uploadedFiles[0]; // Show first file as preview
-            const reader = new FileReader();
-            
-            reader.onload = function(e) {
-                previewContent.innerHTML = `
-                    <img src="${e.target.result}" alt="Preview" class="preview-image">
-                    <div class="preview-info">
-                        <span>${file.name}</span>
-                        <span>${formatFileSize(file.size)}</span>
-                    </div>
-                    <div class="preview-steps">
-                        <div class="preview-steps-title">${translations[currentLanguage].processingSteps}:</div>
-                        ${stepOrder.filter(step => activeSteps.includes(step)).map(step => {
-                            const stepItem = document.querySelector(`[data-step="${step}"]`);
-                            const title = stepItem.querySelector('.step-title').textContent;
-                            return `<div class="preview-step"><i class="fas fa-check"></i> ${title}</div>`;
-                        }).join('')}
-                    </div>
-                `;
-            };
-            
-            reader.readAsDataURL(file);
-        }
 
         // Processing functions
         async function startProcessing() {
@@ -1832,9 +1645,6 @@
                             </div>
                         </div>
                     `).join('');
-                    
-                    // Update preview panel with results
-                    updatePreviewWithResults();
                 } else {
                     showToast(translations[currentLanguage].noQRCodes, 'warning');
                 }
