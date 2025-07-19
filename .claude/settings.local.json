@@ -10,7 +10,8 @@
       "Bash(mkdir:*)",
       "Bash(cp:*)",
       "Bash(ls:*)",
-      "WebFetch(domain:vercel.com)"
+      "WebFetch(domain:vercel.com)",
+      "Bash(curl:*)"
     ],
     "deny": []
   }

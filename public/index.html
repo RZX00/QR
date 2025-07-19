@@ -1524,6 +1524,9 @@
                 processBtn.classList.add('btn-processing');
                 progressContainer.style.display = 'block';
 
+                // 显示处理进度
+                updateProgress(50, translations[currentLanguage].processingFile);
+
                 const response = await fetch('/api/process', {
                     method: 'POST',
                     body: formData
@@ -1532,9 +1535,10 @@
                 if (response.ok) {
                     const result = await response.json();
                     if (result.success) {
-                        currentSessionId = result.session_id;
-                        showToast(translations[currentLanguage].processingStarted, 'success');
-                        startStatusCheck();
+                        updateProgress(100, translations[currentLanguage].completed);
+                        showToast(translations[currentLanguage].processingComplete, 'success');
+                        displayResults(result.files);
+                        resetProcessButton();
                     } else {
                         throw new Error(result.error || 'Processing failed');
                     }
@@ -1552,6 +1556,52 @@
             processBtn.disabled = false;
             processBtn.classList.remove('btn-processing');
             document.getElementById('progressContainer').style.display = 'none';
+        }
+
+        function updateProgress(percent, message) {
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            const progressPercentage = document.getElementById('progressPercentage');
+
+            progressFill.style.width = percent + '%';
+            progressPercentage.textContent = Math.round(percent) + '%';
+            progressText.querySelector('span').textContent = message;
+        }
+
+        function displayResults(files) {
+            const resultsContainer = document.getElementById('resultsContainer');
+            const resultsList = document.getElementById('resultsList');
+            
+            if (files && files.length > 0) {
+                resultsContainer.style.display = 'block';
+                
+                resultsList.innerHTML = files.map(file => `
+                    <div class="result-item">
+                        <div class="result-preview">
+                            ${file.type === 'image' ? `
+                                <img src="${file.data}" alt="${file.name}" onclick="showLargePreview('${file.data}', '${file.name}')">
+                            ` : `
+                                <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--gray-400);">
+                                    <i class="fas fa-file-code" style="font-size: 3rem;"></i>
+                                </div>
+                            `}
+                        </div>
+                        <div class="result-info">
+                            <div class="result-name">${file.name}</div>
+                            <div class="result-meta">
+                                <span>${translations[currentLanguage].fileType}: ${file.type}</span>
+                                ${file.qr_data ? `<span>Data: ${file.qr_data.substring(0, 20)}...</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="result-actions">
+                            <button class="btn btn-small btn-success" onclick="downloadFromData('${file.data}', '${file.name}')">
+                                <i class="fas fa-download"></i>
+                                <span>${translations[currentLanguage].download}</span>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
         }
 
         function startStatusCheck() {
@@ -1643,7 +1693,7 @@
         }
 
 
-        function showLargePreview(filePath, fileName) {
+        function showLargePreview(dataUrl, fileName) {
             const modal = document.createElement('div');
             modal.style.cssText = `
                 position: fixed;
@@ -1661,7 +1711,7 @@
             `;
             
             const img = document.createElement('img');
-            img.src = `/api/preview/${currentSessionId}/${filePath}`;
+            img.src = dataUrl;
             img.alt = fileName;
             img.style.cssText = `
                 max-width: 90%;
@@ -1679,11 +1729,12 @@
             };
         }
 
-        async function downloadFile(filePath, fileName) {
+        function downloadFromData(dataUrl, fileName) {
             try {
-                const response = await fetch(`/api/download?file=${encodeURIComponent(filePath)}&session_id=${currentSessionId}`);
-                if (response.ok) {
-                    const blob = await response.blob();
+                if (dataUrl.startsWith('data:image/svg')) {
+                    // SVG下载
+                    const svgData = dataUrl;
+                    const blob = new Blob([svgData], { type: 'image/svg+xml' });
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
@@ -1692,11 +1743,17 @@
                     a.click();
                     window.URL.revokeObjectURL(url);
                     document.body.removeChild(a);
-                    
-                    showToast(`${fileName} downloaded successfully`, 'success');
                 } else {
-                    throw new Error('Download failed');
+                    // 图片下载
+                    const a = document.createElement('a');
+                    a.href = dataUrl;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
                 }
+                
+                showToast(`${fileName} downloaded successfully`, 'success');
             } catch (error) {
                 showToast(`${translations[currentLanguage].error}: ${error.message}`, 'error');
             }
