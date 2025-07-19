@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-QR码处理工具 - Vercel部署版本
-支持原有前端界面的API接口
+QR码处理API端点 - Vercel Serverless Function
 """
 
 import os
@@ -10,11 +9,10 @@ import shutil
 import uuid
 import json
 import time
-import mimetypes
-from pathlib import Path
-from flask import Flask, request, jsonify, send_file
-from werkzeug.utils import secure_filename
 import threading
+from pathlib import Path
+from flask import Flask, request, jsonify
+from werkzeug.utils import secure_filename
 import cv2
 import numpy as np
 from PIL import Image
@@ -27,13 +25,14 @@ try:
 except ImportError:
     DEPENDENCIES_AVAILABLE = False
 
+# 创建 Flask 应用
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100MB max file size
 
 # 支持的图片格式
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'bmp', 'tiff', 'tif', 'webp'}
 
-# 全局变量存储处理状态
+# 全局变量存储处理状态（在无服务器环境中这些会在函数间共享）
 processing_status = {
     'running': False,
     'progress': 0,
@@ -326,7 +325,7 @@ class VercelQRProcessor:
 # 初始化处理器
 processor = VercelQRProcessor()
 
-@app.route('/api/process', methods=['POST'])
+@app.route('/', methods=['POST'])
 def process_files():
     """处理文件"""
     try:
@@ -364,101 +363,3 @@ def process_files():
     
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
-@app.route('/api/status')
-def get_status():
-    """获取处理状态"""
-    return jsonify(processing_status)
-
-@app.route('/api/results')
-def get_results():
-    """获取处理结果"""
-    return jsonify({
-        'files': processing_status.get('result_files', [])
-    })
-
-@app.route('/api/preview/<session_id>/<path:file_path>')
-def preview_file(session_id, file_path):
-    """预览文件"""
-    try:
-        if session_id not in sessions:
-            return jsonify({'error': 'Invalid session'}), 400
-        
-        session = sessions[session_id]
-        full_path = session['output_dir'] / file_path
-        
-        if not full_path.exists():
-            return jsonify({'error': 'File not found'}), 404
-        
-        # 确定MIME类型
-        mime_type, _ = mimetypes.guess_type(str(full_path))
-        if mime_type is None:
-            mime_type = 'application/octet-stream'
-        
-        return send_file(
-            str(full_path),
-            mimetype=mime_type
-        )
-    
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/download')
-def download_file():
-    """下载文件"""
-    try:
-        file_path = request.args.get('file')
-        session_id = request.args.get('session_id')
-        
-        if not file_path:
-            return jsonify({'error': 'No file specified'}), 400
-        
-        if not session_id:
-            session_id = processing_status.get('session_id')
-        
-        if not session_id or session_id not in sessions:
-            return jsonify({'error': 'Invalid session'}), 400
-        
-        session = sessions[session_id]
-        full_path = session['output_dir'] / file_path
-        
-        if not full_path.exists():
-            return jsonify({'error': 'File not found'}), 404
-        
-        # 确定MIME类型
-        mime_type, _ = mimetypes.guess_type(str(full_path))
-        if mime_type is None:
-            mime_type = 'application/octet-stream'
-        
-        return send_file(
-            str(full_path),
-            as_attachment=True,
-            download_name=full_path.name,
-            mimetype=mime_type
-        )
-    
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/health')
-def health_check():
-    """健康检查"""
-    return jsonify({
-        'status': 'healthy',
-        'dependencies': DEPENDENCIES_AVAILABLE,
-        'version': '1.0.0'
-    })
-
-@app.errorhandler(413)
-def too_large(e):
-    return jsonify({'error': 'File too large. Maximum size is 100MB.'}), 413
-
-@app.errorhandler(404)
-def not_found(e):
-    return jsonify({'error': 'Resource not found'}), 404
-
-@app.errorhandler(500)
-def internal_error(e):
-    return jsonify({'error': 'Internal server error'}), 500
-
-# Flask app is ready for import by index.py

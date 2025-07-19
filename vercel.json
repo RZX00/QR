@@ -1,13 +1,13 @@
 {
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/index.py"
-    }
-  ],
   "functions": {
-    "api/index.py": {
+    "api/process.py": {
       "maxDuration": 30
+    },
+    "api/status.py": {
+      "maxDuration": 10
+    },
+    "api/health.py": {
+      "maxDuration": 10
     }
   }
 }
