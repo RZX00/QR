@@ -1,35 +1,10 @@
 {
-  "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "api/app.py",
-      "use": "@vercel/python",
-      "config": {
-        "maxLambdaSize": "50mb"
-      }
-    },
-    {
-      "src": "public/**",
-      "use": "@vercel/static"
+      "source": "/api/(.*)",
+      "destination": "/api/app.py"
     }
   ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/app.py"
-    },
-    {
-      "src": "/",
-      "dest": "/public/index.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/public/$1"
-    }
-  ],
-  "env": {
-    "PYTHONPATH": "/var/task"
-  },
   "functions": {
     "api/app.py": {
       "maxDuration": 30
