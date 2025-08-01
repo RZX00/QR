@@ -241,4 +241,9 @@ def preview(path):
     return jsonify({'error': 'Use data URLs from results'}), 404
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    # 从环境变量获取配置
+    debug_mode = os.getenv('FLASK_ENV', 'production') == 'development'
+    port = int(os.getenv('PORT', 5000))
+    host = os.getenv('HOST', '0.0.0.0')
+    
+    app.run(debug=debug_mode, host=host, port=port)
