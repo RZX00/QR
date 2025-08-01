@@ -1568,18 +1568,26 @@
             progressText.querySelector('span').textContent = message;
         }
 
+        // 存储文件数据的全局变量
+        let currentResultFiles = [];
+        
         function displayResults(files) {
             const resultsContainer = document.getElementById('resultsContainer');
             const resultsList = document.getElementById('resultsList');
             
             if (files && files.length > 0) {
                 resultsContainer.style.display = 'block';
+                currentResultFiles = files; // 存储文件数据
                 
-                resultsList.innerHTML = files.map(file => `
+                resultsList.innerHTML = files.map((file, index) => `
                     <div class="result-item">
                         <div class="result-preview">
                             ${file.type === 'image' ? `
-                                <img src="${file.data}" alt="${file.name}" onclick="showLargePreview('${file.data}', '${file.name}')">
+                                <img src="${file.data}" alt="${file.name}" onclick="showLargePreviewByIndex(${index})">
+                            ` : file.type === 'svg' ? `
+                                <div style="display: flex; align-items: center; justify-content: center; height: 100%; padding: 10px; cursor: pointer;" onclick="showLargePreviewByIndex(${index})">
+                                    ${file.data}
+                                </div>
                             ` : `
                                 <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--gray-400);">
                                     <i class="fas fa-file-code" style="font-size: 3rem;"></i>
@@ -1594,7 +1602,7 @@
                             </div>
                         </div>
                         <div class="result-actions">
-                            <button class="btn btn-small btn-success" onclick="downloadFromData('${file.data}', '${file.name}')">
+                            <button class="btn btn-small btn-success" onclick="downloadFromDataByIndex(${index})">
                                 <i class="fas fa-download"></i>
                                 <span>${translations[currentLanguage].download}</span>
                             </button>
@@ -1693,6 +1701,18 @@
         }
 
 
+        function showLargePreviewByIndex(index) {
+            const file = currentResultFiles[index];
+            if (!file) return;
+            showLargePreview(file.data, file.name);
+        }
+        
+        function downloadFromDataByIndex(index) {
+            const file = currentResultFiles[index];
+            if (!file) return;
+            downloadFromData(file.data, file.name);
+        }
+        
         function showLargePreview(dataUrl, fileName) {
             const modal = document.createElement('div');
             modal.style.cssText = `
@@ -1710,18 +1730,37 @@
                 backdrop-filter: blur(5px);
             `;
             
-            const img = document.createElement('img');
-            img.src = dataUrl;
-            img.alt = fileName;
-            img.style.cssText = `
-                max-width: 90%;
-                max-height: 90%;
-                border-radius: var(--border-radius);
-                box-shadow: var(--shadow-2xl);
-                transition: var(--transition);
-            `;
+            if (fileName.endsWith('.svg')) {
+                // SVG预览
+                const svgContainer = document.createElement('div');
+                svgContainer.style.cssText = `
+                    max-width: 90%;
+                    max-height: 90%;
+                    background: white;
+                    border-radius: var(--border-radius);
+                    box-shadow: var(--shadow-2xl);
+                    padding: 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                `;
+                svgContainer.innerHTML = dataUrl;
+                modal.appendChild(svgContainer);
+            } else {
+                // 图片预览
+                const img = document.createElement('img');
+                img.src = dataUrl;
+                img.alt = fileName;
+                img.style.cssText = `
+                    max-width: 90%;
+                    max-height: 90%;
+                    border-radius: var(--border-radius);
+                    box-shadow: var(--shadow-2xl);
+                    transition: var(--transition);
+                `;
+                modal.appendChild(img);
+            }
             
-            modal.appendChild(img);
             document.body.appendChild(modal);
             
             modal.onclick = () => {
@@ -1731,31 +1770,53 @@
 
         function downloadFromData(dataUrl, fileName) {
             try {
-                if (dataUrl.startsWith('data:image/svg')) {
-                    // SVG下载
-                    const svgData = dataUrl;
-                    const blob = new Blob([svgData], { type: 'image/svg+xml' });
+                console.log('Downloading:', fileName, 'Type:', typeof dataUrl, 'Data length:', dataUrl.length);
+                
+                if (fileName.endsWith('.svg')) {
+                    // SVG下载 - dataUrl直接包含SVG内容
+                    const blob = new Blob([dataUrl], { type: 'image/svg+xml' });
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
                     a.download = fileName;
+                    a.style.display = 'none';
                     document.body.appendChild(a);
                     a.click();
-                    window.URL.revokeObjectURL(url);
-                    document.body.removeChild(a);
-                } else {
-                    // 图片下载
+                    setTimeout(() => {
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(a);
+                    }, 100);
+                } else if (dataUrl.startsWith('data:')) {
+                    // 图片下载 - base64数据
                     const a = document.createElement('a');
                     a.href = dataUrl;
                     a.download = fileName;
+                    a.style.display = 'none';
                     document.body.appendChild(a);
                     a.click();
-                    document.body.removeChild(a);
+                    setTimeout(() => {
+                        document.body.removeChild(a);
+                    }, 100);
+                } else {
+                    // 其他类型文件
+                    const blob = new Blob([dataUrl], { type: 'application/octet-stream' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = fileName;
+                    a.style.display = 'none';
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(() => {
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(a);
+                    }, 100);
                 }
                 
-                showToast(`${fileName} downloaded successfully`, 'success');
+                showToast(`${fileName} 下载成功`, 'success');
             } catch (error) {
-                showToast(`${translations[currentLanguage].error}: ${error.message}`, 'error');
+                console.error('Download error:', error);
+                showToast(`下载失败: ${error.message}`, 'error');
             }
         }
 

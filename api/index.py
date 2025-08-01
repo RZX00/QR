@@ -25,7 +25,7 @@ try:
 except ImportError:
     DEPENDENCIES_AVAILABLE = False
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../public', static_url_path='')
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 50MB
 
 # 支持的图片格式
@@ -154,9 +154,13 @@ def process_qr_image(image_data, options):
 
 @app.route('/')
 def home():
+    return app.send_static_file('index.html')
+
+@app.route('/api')
+def api_home():
     return jsonify({'message': 'QR Processor API', 'status': 'ready'})
 
-@app.route('/process', methods=['POST'])
+@app.route('/api/process', methods=['POST'])
 def process():
     """处理QR码 - 同步处理，立即返回结果"""
     try:
@@ -191,7 +195,7 @@ def process():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/status')
+@app.route('/api/status')
 def status():
     return jsonify({
         'running': False,
@@ -200,7 +204,7 @@ def status():
         'dependencies': DEPENDENCIES_AVAILABLE
     })
 
-@app.route('/health')
+@app.route('/api/health')
 def health():
     return jsonify({
         'status': 'healthy',
@@ -208,14 +212,17 @@ def health():
         'version': '2.0.0'
     })
 
-@app.route('/results')
+@app.route('/api/results')
 def results():
     return jsonify({'files': []})
 
-@app.route('/download')
+@app.route('/api/download')
 def download():
     return jsonify({'error': 'Use direct download from results'}), 404
 
-@app.route('/preview/<path:path>')
+@app.route('/api/preview/<path:path>')
 def preview(path):
     return jsonify({'error': 'Use data URLs from results'}), 404
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=5000)
