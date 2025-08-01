@@ -58,6 +58,18 @@ def process_qr_image(image_data, options):
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         qr_codes = pyzbar.decode(gray)
         
+        # 如果没有检测到QR码，尝试颜色反转后再次检测
+        if not qr_codes:
+            print("未检测到QR码，尝试颜色反转后重新检测...")
+            inverted_gray = 255 - gray
+            qr_codes = pyzbar.decode(inverted_gray)
+            if qr_codes:
+                print(f"颜色反转后成功检测到 {len(qr_codes)} 个QR码")
+                # 使用反转后的图像作为处理基础
+                image = cv2.cvtColor(inverted_gray, cv2.COLOR_GRAY2BGR)
+            else:
+                print("颜色反转后仍未检测到QR码")
+        
         for i, qr_code in enumerate(qr_codes):
             x, y, w, h = qr_code.rect
             
@@ -185,6 +197,10 @@ def process():
                 # 处理图片
                 results = process_qr_image(file_base64, options)
                 all_results.extend(results)
+        
+        print(f"Processing completed. Found {len(all_results)} results:")  # 调试日志
+        for i, result in enumerate(all_results):
+            print(f"  Result {i+1}: {result.get('name', 'Unknown')} - {result.get('type', 'Unknown')}")  # 调试日志
         
         return jsonify({
             'success': True,
