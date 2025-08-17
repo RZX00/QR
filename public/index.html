@@ -33,34 +33,43 @@
             --text-primary-light: #3C2415;
             --text-secondary-light: #6B5B47;
             
-            /* Current Theme (Light) */
-            --bg: var(--bg-light);
-            --surface: var(--surface-light);
-            --border: var(--border-light);
-            --text-primary: var(--text-primary-light);
-            --text-secondary: var(--text-secondary-light);
+            /* Light Theme Colors */
+            --bg: #FAFAFA;
+            --surface: #FFFFFF;
+            --surface-secondary: #F5F5F5;
+            --border: #E0E0E0;
+            --border-light: #F0F0F0;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --text-muted: #999999;
+            --accent: #4A90E2;
+            --accent-light: #E3F2FD;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --danger: #F44336;
+            --info: #2196F3;
             
-            /* Vintage Gradients */
-            --gradient-primary: linear-gradient(135deg, #FDF6E3 0%, #F4E4BC 50%, #EDD5A3 100%);
-            --gradient-secondary: linear-gradient(90deg, #F7F3E9 0%, #E6DCC6 100%);
-            --gradient-surface: linear-gradient(135deg, #F7F3E9 0%, #F0E6D2 100%);
-            --gradient-shimmer: linear-gradient(90deg, rgba(139,69,19,0) 0%, rgba(139,69,19,.2) 50%, rgba(139,69,19,0) 100%);
+            /* Soft Colors */
+            --gradient-primary: #4A90E2;
+            --gradient-secondary: #E3F2FD;
+            --gradient-surface: #FFFFFF;
+            --gradient-shimmer: rgba(74,144,226,0.1);
             
-            /* Shadows */
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            /* Soft Shadows */
+            --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px 0 rgb(0 0 0 / 0.06);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.06);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04);
             --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
             
-            /* Border Radius */
-            --radius-sm: 6px;
-            --radius: 8px;
-            --radius-md: 12px;
-            --radius-lg: 16px;
-            --radius-xl: 20px;
-            --radius-2xl: 24px;
+            /* Natural Rounded Corners */
+            --radius-sm: 4px;
+            --radius: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-2xl: 20px;
             --radius-full: 9999px;
             
             /* Transitions */
@@ -70,28 +79,28 @@
         }
 
         body {
-            font-family: 'Times New Roman', 'Noto Serif SC', 'Source Han Serif SC', serif;
-            background: var(--gradient-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg);
             min-height: 100vh;
             color: var(--text-primary);
             line-height: 1.6;
-            font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-            font-optical-sizing: auto;
+            margin: 0;
+            padding: 0;
         }
 
         .container {
-            max-width: 1600px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 1rem 2rem;
+            padding: 2rem;
         }
 
-        /* Header - Linear Style */
+        /* Header - Clean Style */
         .header {
             text-align: center;
-            margin-bottom: 2rem;
-            color: white;
+            margin-bottom: 3rem;
+            color: var(--text-primary);
             position: relative;
-            padding: 1.5rem 0;
+            padding: 2rem 0;
         }
 
         .header::before {
@@ -101,30 +110,27 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
-            border-radius: var(--radius-2xl);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
             z-index: -1;
         }
 
         .header h1 {
             font-size: 2.5rem;
-            font-weight: 700;
+            font-weight: 600;
             margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.8) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--text-primary);
             letter-spacing: -0.025em;
-            line-height: 1.1;
+            line-height: 1.2;
         }
 
         .header p {
-            font-size: 1rem;
-            opacity: 0.85;
+            font-size: 1.1rem;
+            color: var(--text-secondary);
             font-weight: 400;
-            margin-bottom: 0.75rem;
+            margin-bottom: 1rem;
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
@@ -133,178 +139,128 @@
         .header .pro-badge {
             display: inline-flex;
             align-items: center;
-            gap: 0.25rem;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 0.25rem 0.75rem;
+            gap: 0.5rem;
+            background: var(--accent-light);
+            color: var(--accent);
+            padding: 0.5rem 1rem;
             border-radius: var(--radius-full);
-            font-size: 0.75rem;
+            font-size: 0.875rem;
             font-weight: 500;
             margin-top: 0.25rem;
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--border);
             transition: var(--transition);
         }
 
         .header .pro-badge:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--accent);
+            color: white;
             transform: translateY(-1px);
         }
 
-        /* Language Selector - Linear Style */
+        /* Language Selector - Clean Style */
         .language-selector {
             position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
+            top: 2rem;
+            right: 2rem;
             display: flex;
             align-items: center;
-            gap: 0.25rem;
-            background: rgba(255, 255, 255, 0.08);
-            padding: 0.375rem;
-            border-radius: var(--radius-full);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            gap: 0.5rem;
+            background: var(--surface);
+            padding: 0.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
         }
 
         .language-btn {
             background: transparent;
             border: none;
-            color: white;
-            padding: 0.5rem 0.875rem;
-            border-radius: var(--radius-full);
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
             cursor: pointer;
             font-weight: 500;
             transition: var(--transition);
             font-size: 0.875rem;
-            opacity: 0.7;
         }
 
         .language-btn:hover {
-            opacity: 1;
-            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            background: var(--bg);
         }
 
         .language-btn.active {
-            background: rgba(255, 255, 255, 0.2);
-            opacity: 1;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            background: var(--accent);
+            color: white;
+            box-shadow: var(--shadow-sm);
         }
 
-        /* Main Layout - Left-Right Layout */
+        /* Main Layout - Vertical Layout */
         .main-layout {
             display: flex;
-            gap: 3rem;
-            max-width: 1800px;
+            flex-direction: column;
+            gap: 2rem;
+            max-width: 800px;
             margin: 0 auto;
-            align-items: flex-start;
+            align-items: stretch;
         }
 
         .processing-panel {
-            flex: 1;
             background: var(--surface);
-            border-radius: var(--radius-2xl);
-            padding: 2.5rem;
-            box-shadow: var(--shadow-2xl);
-            backdrop-filter: blur(20px);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
             border: 1px solid var(--border);
-            position: relative;
-            overflow: hidden;
-            min-width: 0;
-        }
-
-        .processing-panel::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--gradient-primary);
-            border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+            width: 100%;
         }
 
         .preview-panel {
-            flex: 1;
             background: var(--surface);
-            border-radius: var(--radius-2xl);
-            padding: 2.5rem;
-            box-shadow: var(--shadow-2xl);
-            backdrop-filter: blur(20px);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
             border: 1px solid var(--border);
-            position: relative;
-            overflow: hidden;
-            min-width: 0;
-            min-height: 600px;
+            width: 100%;
+            min-height: 400px;
         }
-
-        .preview-panel::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--gradient-secondary);
-            border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
-        }
-
-
-        /* Enhanced Upload Area */
+        /* Upload Area - Clean Style */
         .upload-area {
             border: 2px dashed var(--border);
-            border-radius: var(--radius-xl);
+            border-radius: var(--radius-lg);
             padding: 3rem 2rem;
             text-align: center;
             margin-bottom: 2rem;
             transition: var(--transition);
-            background: var(--surface);
-            position: relative;
-            overflow: hidden;
+            background: var(--bg);
             cursor: pointer;
         }
 
-        .upload-area::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: var(--gradient-shimmer);
-            transition: left 0.6s ease;
-        }
-
-        .upload-area:hover::before {
-            left: 100%;
-        }
-
         .upload-area:hover {
-            border-color: var(--primary);
+            border-color: var(--accent);
             background: var(--surface);
-            transform: translateY(-1px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            border-style: solid;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
         .upload-area.dragover {
-            border-color: var(--primary);
-            background: var(--surface);
-            transform: scale(1.01);
+            border-color: var(--accent);
+            background: var(--accent-light);
             border-style: solid;
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            box-shadow: var(--shadow-lg);
         }
 
         .upload-icon {
-            width: 72px;
-            height: 72px;
+            width: 64px;
+            height: 64px;
             margin: 0 auto 1.5rem;
-            background: var(--gradient-primary);
+            background: var(--accent);
             border-radius: var(--radius-full);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 2rem;
-            box-shadow: 0 8px 25px -8px rgba(99, 102, 241, 0.4);
+            font-size: 1.5rem;
+            box-shadow: var(--shadow-md);
         }
 
         .upload-text {
@@ -351,60 +307,28 @@
             padding: 1rem;
             background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius-md);
             margin-bottom: 0.75rem;
             transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .file-item::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            background: var(--gradient-primary);
-            transform: scaleY(0);
-            transition: transform 0.3s ease;
-        }
-
-        .file-item:hover::before {
-            transform: scaleY(1);
         }
 
         .file-item:hover {
-            border-color: var(--primary);
-            background: var(--surface);
-            transform: translateX(2px);
-            box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
         }
 
         .file-icon {
             width: 48px;
             height: 48px;
-            background: var(--gradient-primary);
-            border-radius: var(--radius-lg);
+            background: var(--accent);
+            border-radius: var(--radius-md);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-size: 1.2rem;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 12px -4px rgba(99, 102, 241, 0.3);
-        }
-
-        .file-icon::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: var(--gradient-shimmer);
-            animation: shimmer 2s infinite;
+            box-shadow: var(--shadow-sm);
         }
 
         .file-details {
@@ -453,7 +377,7 @@
             gap: 0.5rem;
         }
 
-        /* Processing Steps - Linear Style */
+        /* Processing Steps - Vintage Workflow Style */
         .processing-steps {
             margin-bottom: 2rem;
         }
@@ -462,10 +386,12 @@
             font-size: 1.375rem;
             font-weight: 700;
             color: var(--text-primary);
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            text-align: center;
+            justify-content: center;
         }
 
         .section-title i {
@@ -474,46 +400,36 @@
 
         .steps-container {
             background: var(--surface);
-            border-radius: var(--radius-xl);
-            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
             border: 1px solid var(--border);
-            position: relative;
-        }
-
-        .steps-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--gradient-primary);
-            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            box-shadow: var(--shadow-md);
         }
 
         .step-item {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            background: var(--surface);
-            border-radius: var(--radius-lg);
-            margin-bottom: 0.75rem;
+            gap: 1.25rem;
+            padding: 1.25rem;
+            background: var(--bg);
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
             cursor: grab;
             transition: var(--transition);
             border: 1px solid var(--border);
-            position: relative;
+            box-shadow: var(--shadow-sm);
         }
 
         .step-item:hover {
-            box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-md);
             transform: translateY(-1px);
+            border-color: var(--accent);
         }
 
         .step-item.active {
-            border-color: var(--primary);
-            background: var(--surface);
-            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+            border-color: var(--accent);
+            background: var(--accent-light);
+            box-shadow: var(--shadow-md);
         }
 
         .step-item.sortable-chosen {
@@ -545,27 +461,15 @@
         .step-icon {
             width: 48px;
             height: 48px;
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius-md);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-size: 1.2rem;
-            position: relative;
-            overflow: hidden;
-            background: var(--gradient-primary);
-            box-shadow: 0 4px 12px -4px rgba(99, 102, 241, 0.3);
-        }
-
-        .step-icon::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: var(--gradient-shimmer);
-            animation: shimmer 3s infinite;
+            background: var(--accent);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
         }
 
         .step-content {
@@ -587,17 +491,20 @@
         }
 
         .step-toggle {
-            width: 52px;
-            height: 28px;
-            background: var(--border);
+            width: 60px;
+            height: 32px;
+            background: var(--surface-secondary);
             border-radius: var(--radius-full);
             position: relative;
             cursor: pointer;
             transition: var(--transition);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
         }
 
         .step-toggle.active {
-            background: var(--primary);
+            background: var(--accent);
+            border-color: var(--accent);
         }
 
         .step-toggle::after {
@@ -605,17 +512,19 @@
             position: absolute;
             top: 2px;
             left: 2px;
-            width: 24px;
-            height: 24px;
+            width: 26px;
+            height: 26px;
             background: white;
             border-radius: var(--radius-full);
             transition: var(--transition);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-sm);
         }
 
         .step-toggle.active::after {
-            transform: translateX(24px);
+            transform: translateX(28px);
         }
+
+
 
 
         /* Preview Area */
@@ -668,7 +577,7 @@
             width: 80px;
             height: 80px;
             margin: 0 auto 1.5rem;
-            background: var(--gradient-secondary);
+            background: var(--surface-secondary);
             border-radius: var(--radius-full);
             display: flex;
             align-items: center;
@@ -772,7 +681,7 @@
 
         /* Enhanced Buttons - Linear Style */
         .btn {
-            background: var(--gradient-primary);
+            background: var(--accent);
             color: white;
             border: none;
             padding: 0.625rem 1.25rem;
@@ -792,25 +701,10 @@
             box-shadow: 0 4px 12px -4px rgba(99, 102, 241, 0.4);
         }
 
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: var(--gradient-shimmer);
-            transition: left 0.5s ease;
-        }
-
-        .btn:hover::before {
-            left: 100%;
-        }
-
         .btn:hover {
             opacity: 0.9;
             transform: translateY(-1px);
-            box-shadow: 0 8px 20px -6px rgba(99, 102, 241, 0.5);
+            box-shadow: var(--shadow-md);
         }
 
         .btn:active {
@@ -818,21 +712,21 @@
         }
 
         .btn-secondary {
-            background: var(--gradient-secondary);
-            box-shadow: 0 4px 12px -4px rgba(6, 182, 212, 0.4);
+            background: var(--primary);
+            box-shadow: var(--shadow-sm);
         }
 
         .btn-secondary:hover {
-            box-shadow: 0 8px 20px -6px rgba(6, 182, 212, 0.5);
+            box-shadow: var(--shadow-md);
         }
 
         .btn-success {
-            background: linear-gradient(135deg, #10B981, #059669);
-            box-shadow: 0 4px 12px -4px rgba(16, 185, 129, 0.4);
+            background: #10B981;
+            box-shadow: var(--shadow-sm);
         }
 
         .btn-success:hover {
-            box-shadow: 0 8px 20px -6px rgba(16, 185, 129, 0.5);
+            box-shadow: var(--shadow-md);
         }
 
         .btn-outline {
@@ -861,15 +755,32 @@
             transform: none;
         }
 
+        /* 键盘导航焦点样式 */
+        .btn:focus,
+        .upload-area:focus,
+        .step-toggle:focus {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .step-toggle:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+
+        .upload-area:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
         .btn:disabled:hover {
             transform: none;
             box-shadow: none;
         }
 
         .btn-processing {
-            background: var(--gradient-secondary);
+            background: var(--primary);
             position: relative;
-            box-shadow: 0 4px 12px -4px rgba(6, 182, 212, 0.4);
+            box-shadow: var(--shadow-sm);
         }
 
         .btn-processing::after {
@@ -909,23 +820,14 @@
 
         .progress-fill {
             height: 100%;
-            background: var(--gradient-primary);
+            background: var(--accent);
             width: 0%;
             transition: width 0.3s ease;
             border-radius: var(--radius-full);
             position: relative;
         }
 
-        .progress-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--gradient-shimmer);
-            animation: shimmer 2s infinite;
-        }
+
 
         .progress-text {
             font-weight: 500;
@@ -1034,14 +936,8 @@
         /* Responsive Design */
         @media (max-width: 1200px) {
             .main-layout {
-                flex-direction: column;
                 gap: 1.5rem;
-            }
-
-            .processing-panel,
-            .preview-panel {
-                flex: none;
-                min-width: auto;
+                max-width: 700px;
             }
 
             .result-grid {
@@ -1056,8 +952,8 @@
             }
             
             .main-layout {
-                max-width: 2200px;
-                gap: 4rem;
+                max-width: 1000px;
+                gap: 3rem;
             }
             
             .processing-panel,
@@ -1186,39 +1082,12 @@
             }
         }
 
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        @keyframes shimmer {
-            0% {
-                transform: translateX(-100%);
-            }
-            100% {
-                transform: translateX(100%);
-            }
-        }
-
         @keyframes spin {
             0% {
                 transform: translate(-50%, -50%) rotate(0deg);
             }
             100% {
                 transform: translate(-50%, -50%) rotate(360deg);
-            }
-        }
-
-        @keyframes rotate {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
             }
         }
 
@@ -1233,7 +1102,7 @@
         }
 
         ::-webkit-scrollbar-thumb {
-            background: var(--gradient-primary);
+            background: var(--accent);
             border-radius: 4px;
         }
 
@@ -1269,22 +1138,19 @@
         <div class="main-layout">
             <!-- Left Panel: Processing Controls -->
             <div class="processing-panel slide-up">
-                <!-- Process Button at Top -->
-                <div style="text-align: center; margin-bottom: 2rem;">
-                    <button class="btn" onclick="startProcessing()" id="processBtn">
-                        <i class="fas fa-play"></i>
-                        <span data-i18n="startProcessing">Start Processing</span>
-                    </button>
-                </div>
-                
                 <!-- File Upload -->
-                <div class="upload-area" id="uploadArea">
+                <div class="upload-area" id="uploadArea" 
+                     tabindex="0" 
+                     role="button" 
+                     aria-label="Upload images by clicking or dropping files here"
+                     title="Click to select files or drag and drop images here">
                     <div class="upload-icon">
                         <i class="fas fa-cloud-upload-alt"></i>
                     </div>
                     <div class="upload-text" data-i18n="uploadText">Drop images here or click to upload</div>
                     <div class="upload-subtext" data-i18n="uploadSubtext">Supports JPG, PNG, BMP, TIFF, WEBP formats</div>
-                    <input type="file" id="fileInput" class="file-input" multiple accept="image/*">
+                    <input type="file" id="fileInput" class="file-input" multiple accept="image/*" 
+                           aria-label="Select image files to upload">
                     <div class="upload-stats">
                         <div class="stat">
                             <i class="fas fa-file-image"></i>
@@ -1311,65 +1177,87 @@
                         <span data-i18n="processingSteps">Processing Steps</span>
                     </div>
                     <div class="steps-container">
+
+                        
                         <div class="step-item active" data-step="extract">
                             <div class="step-handle">
                                 <i class="fas fa-grip-vertical"></i>
                             </div>
-                            <div class="step-icon" style="background: var(--gradient-primary);">
+                            <div class="step-icon" style="background: var(--accent);">
                                 <i class="fas fa-crop-alt"></i>
                             </div>
                             <div class="step-content">
                                 <div class="step-title" data-i18n="extractTitle">Extract QR Codes</div>
                                 <div class="step-description" data-i18n="extractDesc">Detect and extract QR codes from images</div>
                             </div>
-                            <div class="step-toggle active" onclick="toggleStep('extract')"></div>
+                            <div class="step-toggle active" onclick="toggleStep('extract')" 
+                                 tabindex="0" role="switch" aria-checked="true" 
+                                 aria-label="Toggle extract QR codes step" 
+                                 title="Click to enable/disable QR code extraction"></div>
                         </div>
 
                         <div class="step-item" data-step="transparent">
                             <div class="step-handle">
                                 <i class="fas fa-grip-vertical"></i>
                             </div>
-                            <div class="step-icon" style="background: var(--gradient-success);">
+                            <div class="step-icon" style="background: #10B981;">
                                 <i class="fas fa-magic"></i>
                             </div>
                             <div class="step-content">
                                 <div class="step-title" data-i18n="transparentTitle">Transparent Background</div>
                                 <div class="step-description" data-i18n="transparentDesc">Remove white background and make it transparent</div>
                             </div>
-                            <div class="step-toggle" onclick="toggleStep('transparent')"></div>
+                            <div class="step-toggle" onclick="toggleStep('transparent')" 
+                                 tabindex="0" role="switch" aria-checked="false" 
+                                 aria-label="Toggle transparent background step" 
+                                 title="Click to enable/disable transparent background"></div>
                         </div>
 
                         <div class="step-item" data-step="svg">
                             <div class="step-handle">
                                 <i class="fas fa-grip-vertical"></i>
                             </div>
-                            <div class="step-icon" style="background: var(--gradient-secondary);">
+                            <div class="step-icon" style="background: var(--primary);">
                                 <i class="fas fa-vector-square"></i>
                             </div>
                             <div class="step-content">
                                 <div class="step-title" data-i18n="svgTitle">Convert to SVG</div>
                                 <div class="step-description" data-i18n="svgDesc">Generate scalable vector graphics version</div>
                             </div>
-                            <div class="step-toggle" onclick="toggleStep('svg')"></div>
+                            <div class="step-toggle" onclick="toggleStep('svg')" 
+                                 tabindex="0" role="switch" aria-checked="false" 
+                                 aria-label="Toggle convert to SVG step" 
+                                 title="Click to enable/disable SVG conversion"></div>
                         </div>
 
                         <div class="step-item" data-step="invert">
                             <div class="step-handle">
                                 <i class="fas fa-grip-vertical"></i>
                             </div>
-                            <div class="step-icon" style="background: var(--gradient-dark);">
+                            <div class="step-icon" style="background: var(--text-primary);">
                                 <i class="fas fa-adjust"></i>
                             </div>
                             <div class="step-content">
                                 <div class="step-title" data-i18n="invertTitle">Invert Colors</div>
                                 <div class="step-description" data-i18n="invertDesc">Invert black and white colors</div>
                             </div>
-                            <div class="step-toggle" onclick="toggleStep('invert')"></div>
+                            <div class="step-toggle" onclick="toggleStep('invert')" 
+                                 tabindex="0" role="switch" aria-checked="false" 
+                                 aria-label="Toggle invert colors step" 
+                                 title="Click to enable/disable color inversion"></div>
                         </div>
                     </div>
                 </div>
 
-
+                <!-- Process Button -->
+                <div style="text-align: center; margin: 2rem 0;">
+                    <button class="btn" onclick="startProcessing()" id="processBtn" 
+                            title="Start processing uploaded images (Ctrl+Enter)" 
+                            aria-label="Start processing uploaded images">
+                        <i class="fas fa-play"></i>
+                        <span data-i18n="startProcessing">Start Processing</span>
+                    </button>
+                </div>
 
                 <!-- Progress -->
                 <div class="progress-container" id="progressContainer">
@@ -1561,6 +1449,27 @@
             setupSortable();
             updateLanguage();
             initializePreviewState();
+            initializeStepStates();
+        }
+
+        function initializeStepStates() {
+            // 同步activeSteps数组和DOM元素状态
+            const allSteps = ['extract', 'transparent', 'svg', 'invert'];
+            
+            allSteps.forEach(step => {
+                const stepItem = document.querySelector(`[data-step="${step}"]`);
+                const toggle = stepItem?.querySelector('.step-toggle');
+                
+                if (stepItem && toggle) {
+                    if (activeSteps.includes(step)) {
+                        stepItem.classList.add('active');
+                        toggle.classList.add('active');
+                    } else {
+                        stepItem.classList.remove('active');
+                        toggle.classList.remove('active');
+                    }
+                }
+            });
         }
 
         function initializePreviewState() {
@@ -2137,6 +2046,62 @@
                 }
             }, 300);
         }
+
+        // 键盘事件监听器
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+Enter 开始处理
+            if (e.ctrlKey && e.key === 'Enter') {
+                e.preventDefault();
+                const processBtn = document.getElementById('processBtn');
+                if (!processBtn.disabled) {
+                    startProcessing();
+                }
+            }
+            
+            // Escape 关闭通知
+            if (e.key === 'Escape') {
+                const toasts = document.querySelectorAll('.toast');
+                toasts.forEach(toast => {
+                    const closeBtn = toast.querySelector('.toast-close');
+                    if (closeBtn) closeToast(closeBtn);
+                });
+            }
+        });
+
+        // 改进上传区域的键盘支持
+        document.getElementById('uploadArea').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                document.getElementById('fileInput').click();
+            }
+        });
+
+        // 改进步骤切换的键盘支持
+        document.querySelectorAll('.step-toggle').forEach(toggle => {
+            toggle.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.click();
+                }
+            });
+        });
+
+        // 更新切换状态的aria-checked属性
+        function updateToggleAccessibility(step, isActive) {
+            const toggle = document.querySelector(`[data-step="${step}"] .step-toggle`);
+            if (toggle) {
+                toggle.setAttribute('aria-checked', isActive.toString());
+            }
+        }
+
+        // 修改原有的toggleStep函数以支持可访问性
+        const originalToggleStep = window.toggleStep;
+        window.toggleStep = function(step) {
+            const result = originalToggleStep(step);
+            const isActive = activeSteps.includes(step);
+            updateToggleAccessibility(step, isActive);
+            return result;
+        };
     </script>
 </body>
 </html>
