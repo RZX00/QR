@@ -443,6 +443,12 @@
             box-shadow: var(--shadow-xl);
         }
 
+        .step-item.sortable-ghost {
+            opacity: 0.3;
+            background: var(--accent-light);
+            border: 2px dashed var(--accent);
+        }
+
         .step-handle {
             color: var(--text-secondary);
             cursor: grab;
@@ -1599,11 +1605,29 @@
         // Processing steps functions
         function setupSortable() {
             const stepsContainer = document.querySelector('.steps-container');
+            if (!stepsContainer) {
+                console.error('Steps container not found');
+                return;
+            }
+            
             new Sortable(stepsContainer, {
                 handle: '.step-handle',
                 animation: 150,
+                ghostClass: 'sortable-ghost',
+                chosenClass: 'sortable-chosen',
+                dragClass: 'sortable-drag',
+                forceFallback: false,
+                fallbackTolerance: 3,
+                onStart: function(evt) {
+                    console.log('Drag started:', evt.item.getAttribute('data-step'));
+                },
                 onEnd: function(evt) {
+                    console.log('Drag ended:', evt.item.getAttribute('data-step'));
                     updateStepOrder();
+                },
+                onMove: function(evt) {
+                    // 允许所有步骤被拖动，无论激活状态
+                    return true;
                 }
             });
         }
@@ -1617,20 +1641,19 @@
             const stepItem = document.querySelector(`[data-step="${step}"]`);
             const toggle = stepItem.querySelector('.step-toggle');
             
-            if (step === 'extract') {
-                // Extract step cannot be disabled
-                return;
-            }
-
             if (activeSteps.includes(step)) {
                 activeSteps = activeSteps.filter(s => s !== step);
                 toggle.classList.remove('active');
                 stepItem.classList.remove('active');
+                toggle.setAttribute('aria-checked', 'false');
             } else {
                 activeSteps.push(step);
                 toggle.classList.add('active');
                 stepItem.classList.add('active');
+                toggle.setAttribute('aria-checked', 'true');
             }
+            
+            console.log('Active steps:', activeSteps);
         }
 
 

@@ -39,6 +39,18 @@ def process_qr_image(image_data, options):
     results = []
     
     try:
+        # 获取步骤顺序和激活步骤
+        step_order = options.get('stepOrder', ['extract', 'transparent', 'svg', 'invert'])
+        active_steps = options.get('activeSteps', ['extract'])
+        
+        print(f"处理步骤顺序: {step_order}")
+        print(f"激活的步骤: {active_steps}")
+        
+        # 如果extract步骤未激活，直接返回空结果
+        if 'extract' not in active_steps:
+            print("extract步骤未激活，跳过QR码检测")
+            return []
+        
         # 解码base64图片
         if image_data.startswith('data:image'):
             # 移除data URL前缀
@@ -69,13 +81,7 @@ def process_qr_image(image_data, options):
                 image = cv2.cvtColor(inverted_gray, cv2.COLOR_GRAY2BGR)
             else:
                 print("颜色反转后仍未检测到QR码")
-        
-        # 获取步骤顺序和激活步骤
-        step_order = options.get('stepOrder', ['extract', 'transparent', 'svg', 'invert'])
-        active_steps = options.get('activeSteps', ['extract'])
-        
-        print(f"处理步骤顺序: {step_order}")
-        print(f"激活的步骤: {active_steps}")
+                return []  # 如果没有检测到QR码，直接返回空结果
         
         for i, qr_code in enumerate(qr_codes):
             x, y, w, h = qr_code.rect
@@ -93,10 +99,15 @@ def process_qr_image(image_data, options):
             qr_region = image[start_y:end_y, start_x:end_x]
             qr_data = qr_code.data.decode('utf-8', errors='ignore')
             
+            print(f"处理QR码 {i+1}: {qr_data[:50]}...")
+            
             # 按照stepOrder的顺序处理每个步骤
             for step in step_order:
                 if step not in active_steps:
+                    print(f"跳过步骤 '{step}' (未激活)")
                     continue
+                    
+                print(f"执行步骤 '{step}'")
                     
                 if step == 'extract':
                     # 基础QR码提取
