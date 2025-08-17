@@ -1,0 +1,10 @@
+# 运行时依赖
+opencv-python-headless>=4.5.0
+pyzbar>=0.1.8
+Pillow>=8.0.0
+qrcode[pil]>=7.0.0
+Flask>=2.0.0
+
+# 打包依赖
+PyInstaller>=5.0.0
+auto-py-to-exe>=2.20.0

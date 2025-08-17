@@ -1,14 +1,15 @@
 services:
-  qr-app:
+  qr:
     build: .
     container_name: qr-processor
-    restart: unless-stopped
+    restart: always
     volumes:
       - ./image:/app/image
       - ./qr_output:/app/qr_output
     environment:
       - FLASK_ENV=production
       - PYTHONPATH=/app
+      - TZ=Asia/Shanghai
     networks:
       - qr-network
     healthcheck:
@@ -18,19 +19,23 @@ services:
       retries: 3
       start_period: 40s
 
+
+
   nginx:
     image: nginx:alpine
     container_name: qr-nginx
-    restart: unless-stopped
+    restart: always
     ports:
-      - "80:80"
-      - "443:443"
+      - "8080:80"
+      - "8443:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./nginx/ssl:/etc/nginx/ssl
+    environment:
+      - TZ=Asia/Shanghai
     depends_on:
-      - qr-app
+      - qr
     networks:
       - qr-network
 
