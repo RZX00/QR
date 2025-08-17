@@ -1,4 +1,25 @@
-QR处理器项目 - EXE版本使用说明
+QR处理器项目 - 使用说明
+
+## 项目简介
+本项目是一个基于Python Flask的QR码处理工具，提供QR码识别、提取和处理功能。
+
+## 核心文件说明
+- launcher.py: 主启动脚本
+- api/index.py: Flask后端API服务
+- public/index.html: 前端界面
+- requirements.txt: Python依赖包列表
+- image/: 示例图片文件夹
+
+## 使用方法
+1. 安装依赖: pip install -r requirements.txt
+2. 运行程序: python launcher.py
+3. 浏览器访问: http://127.0.0.1:5000
+
+## 功能特性
+- 支持多种图片格式的QR码识别
+- 自动检测和提取QR码区域
+- 支持透明背景处理
+- 提供Web界面操作
 ========================================
 
 🎉 恭喜！您的QR处理器项目已成功打包为EXE文件！
