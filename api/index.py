@@ -70,6 +70,13 @@ def process_qr_image(image_data, options):
             else:
                 print("颜色反转后仍未检测到QR码")
         
+        # 获取步骤顺序和激活步骤
+        step_order = options.get('stepOrder', ['extract', 'transparent', 'svg', 'invert'])
+        active_steps = options.get('activeSteps', ['extract'])
+        
+        print(f"处理步骤顺序: {step_order}")
+        print(f"激活的步骤: {active_steps}")
+        
         for i, qr_code in enumerate(qr_codes):
             x, y, w, h = qr_code.rect
             
@@ -84,79 +91,90 @@ def process_qr_image(image_data, options):
             
             # 提取QR码区域
             qr_region = image[start_y:end_y, start_x:end_x]
+            qr_data = qr_code.data.decode('utf-8', errors='ignore')
             
-            # 基础QR码
-            _, buffer = cv2.imencode('.png', qr_region)
-            qr_base64 = base64.b64encode(buffer).decode('utf-8')
-            
-            result = {
-                'name': f'qr_code_{i+1}.png',
-                'type': 'image',
-                'data': f'data:image/png;base64,{qr_base64}',
-                'qr_data': qr_code.data.decode('utf-8', errors='ignore')
-            }
-            
-            # 透明背景版本
-            if options.get('transparent'):
-                pil_image = Image.fromarray(cv2.cvtColor(qr_region, cv2.COLOR_BGR2RGB))
-                rgba_img = pil_image.convert('RGBA')
-                data = np.array(rgba_img)
-                
-                # 将白色背景设为透明
-                white_mask = (data[:, :, 0] >= 240) & (data[:, :, 1] >= 240) & (data[:, :, 2] >= 240)
-                data[white_mask] = [255, 255, 255, 0]
-                
-                transparent_img = Image.fromarray(data, 'RGBA')
-                import io
-                img_buffer = io.BytesIO()
-                transparent_img.save(img_buffer, format='PNG')
-                transparent_base64 = base64.b64encode(img_buffer.getvalue()).decode('utf-8')
-                
-                results.append({
-                    'name': f'qr_code_{i+1}_transparent.png',
-                    'type': 'image',
-                    'data': f'data:image/png;base64,{transparent_base64}',
-                    'qr_data': qr_code.data.decode('utf-8', errors='ignore')
-                })
-            
-            # 反色版本
-            if options.get('invert'):
-                inverted = 255 - qr_region
-                _, buffer = cv2.imencode('.png', inverted)
-                inverted_base64 = base64.b64encode(buffer).decode('utf-8')
-                
-                results.append({
-                    'name': f'qr_code_{i+1}_inverted.png',
-                    'type': 'image',
-                    'data': f'data:image/png;base64,{inverted_base64}',
-                    'qr_data': qr_code.data.decode('utf-8', errors='ignore')
-                })
-            
-            # SVG版本
-            if options.get('svg'):
-                try:
-                    qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
-                    qr.add_data(qr_code.data.decode('utf-8', errors='ignore'))
-                    qr.make(fit=True)
+            # 按照stepOrder的顺序处理每个步骤
+            for step in step_order:
+                if step not in active_steps:
+                    continue
                     
-                    factory = qrcode.image.svg.SvgPathImage
-                    svg_img = qr.make_image(image_factory=factory)
-                    
-                    import io
-                    svg_buffer = io.BytesIO()
-                    svg_img.save(svg_buffer)
-                    svg_data = svg_buffer.getvalue().decode('utf-8')
+                if step == 'extract':
+                    # 基础QR码提取
+                    _, buffer = cv2.imencode('.png', qr_region)
+                    qr_base64 = base64.b64encode(buffer).decode('utf-8')
                     
                     results.append({
-                        'name': f'qr_code_{i+1}.svg',
-                        'type': 'svg',
-                        'data': svg_data,
-                        'qr_data': qr_code.data.decode('utf-8', errors='ignore')
+                        'name': f'qr_code_{i+1}.png',
+                        'type': 'image',
+                        'data': f'data:image/png;base64,{qr_base64}',
+                        'qr_data': qr_data
                     })
-                except Exception as e:
-                    print(f"SVG error: {e}")
-            
-            results.append(result)
+                    
+                elif step == 'transparent':
+                    # 透明背景版本
+                    try:
+                        pil_image = Image.fromarray(cv2.cvtColor(qr_region, cv2.COLOR_BGR2RGB))
+                        rgba_img = pil_image.convert('RGBA')
+                        data = np.array(rgba_img)
+                        
+                        # 将白色背景设为透明
+                        white_mask = (data[:, :, 0] >= 240) & (data[:, :, 1] >= 240) & (data[:, :, 2] >= 240)
+                        data[white_mask] = [255, 255, 255, 0]
+                        
+                        transparent_img = Image.fromarray(data, 'RGBA')
+                        import io
+                        img_buffer = io.BytesIO()
+                        transparent_img.save(img_buffer, format='PNG')
+                        transparent_base64 = base64.b64encode(img_buffer.getvalue()).decode('utf-8')
+                        
+                        results.append({
+                            'name': f'qr_code_{i+1}_transparent.png',
+                            'type': 'image',
+                            'data': f'data:image/png;base64,{transparent_base64}',
+                            'qr_data': qr_data
+                        })
+                    except Exception as e:
+                        print(f"透明背景处理错误: {e}")
+                        
+                elif step == 'svg':
+                    # SVG版本
+                    try:
+                        qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
+                        qr.add_data(qr_data)
+                        qr.make(fit=True)
+                        
+                        factory = qrcode.image.svg.SvgPathImage
+                        svg_img = qr.make_image(image_factory=factory)
+                        
+                        import io
+                        svg_buffer = io.BytesIO()
+                        svg_img.save(svg_buffer)
+                        svg_data = svg_buffer.getvalue().decode('utf-8')
+                        
+                        results.append({
+                            'name': f'qr_code_{i+1}.svg',
+                            'type': 'svg',
+                            'data': svg_data,
+                            'qr_data': qr_data
+                        })
+                    except Exception as e:
+                        print(f"SVG处理错误: {e}")
+                        
+                elif step == 'invert':
+                    # 反色版本
+                    try:
+                        inverted = 255 - qr_region
+                        _, buffer = cv2.imencode('.png', inverted)
+                        inverted_base64 = base64.b64encode(buffer).decode('utf-8')
+                        
+                        results.append({
+                            'name': f'qr_code_{i+1}_inverted.png',
+                            'type': 'image',
+                            'data': f'data:image/png;base64,{inverted_base64}',
+                            'qr_data': qr_data
+                        })
+                    except Exception as e:
+                        print(f"颜色反转处理错误: {e}")
         
         return results
         

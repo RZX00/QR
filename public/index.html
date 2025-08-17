@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Studio | 专业二维码处理工具</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.css" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -1307,7 +1307,7 @@
     <!-- Toast Container -->
     <div id="toastContainer"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script>
         // Global variables
         let currentLanguage = 'en';
@@ -1650,7 +1650,9 @@
                 extract: activeSteps.includes('extract'),
                 transparent: activeSteps.includes('transparent'),
                 svg: activeSteps.includes('svg'),
-                invert: activeSteps.includes('invert')
+                invert: activeSteps.includes('invert'),
+                stepOrder: stepOrder,
+                activeSteps: activeSteps
             };
 
             formData.append('options', JSON.stringify(options));
