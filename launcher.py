@@ -18,7 +18,7 @@ sys.path.insert(0, str(current_dir))
 # 设置环境变量
 os.environ['FLASK_ENV'] = 'production'
 os.environ['HOST'] = '127.0.0.1'
-os.environ['PORT'] = '5000'
+os.environ['PORT'] = '53123'
 
 def open_browser():
     """延迟打开浏览器"""
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     print("="*50)
     print("    QR码处理器 - 正在启动...")
     print("="*50)
-    print("服务地址: http://127.0.0.1:5000")
+    print(f"服务地址: http://{os.environ.get('HOST','127.0.0.1')}:{os.environ.get('PORT','53123')}")
     print("按 Ctrl+C 停止服务")
     print("="*50)
     
@@ -41,7 +41,9 @@ if __name__ == '__main__':
     try:
         # 导入并启动Flask应用
         from api.index import app
-        app.run(debug=False, host='127.0.0.1', port=5000)
+        host = os.environ.get('HOST', '127.0.0.1')
+        port = int(os.environ.get('PORT', '53123'))
+        app.run(debug=False, host=host, port=port)
     except KeyboardInterrupt:
         print("\n服务已停止")
     except Exception as e:

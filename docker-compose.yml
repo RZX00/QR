@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  qr-app:
+    build:
+      context: .
+    image: qr-processor:latest
+    container_name: qr-processor
+    environment:
+      - FLASK_ENV=production
+      - PORT=53123
+    ports:
+      - "53123:53123"
+    restart: unless-stopped
+    # Uncomment to mount local assets for quick iteration
+    # volumes:
+    #   - ./public:/app/public:ro
+    #   - ./api:/app/api:ro
+    #   - ./image:/app/image
