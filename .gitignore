@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# 本地 Agent / 编辑器工具的配置和产物，不属于项目
+.claude/settings.local.json
+.cursor/
+.windsurfrules
+.superdesign/
+
+.DS_Store
